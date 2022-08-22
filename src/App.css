@@ -36,3 +36,11 @@
     transform: rotate(360deg);
   }
 }
+
+.jsmind_container {
+  width: 800px;
+  height: 500px;
+  border: solid 1px #ccc;
+  /*background:#f4f4f4;*/
+  background: #f4f4f4;
+}
