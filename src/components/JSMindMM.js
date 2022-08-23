@@ -1,21 +1,32 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { save } from 'save-file';
 
 const JSMindMM = ({
     mind,
     styles,
     options
 }) => {
+    const jm = useRef();
+
     useEffect(() => {
-        const jm = new window.jsMind(options);
-        jm.show(mind);
-    }, []);
+        jm.current = new window.jsMind(options)
+        jm.current.show(mind);
+    }, [jm]);
 
     return (
-        <div
-            id="jsmind_container"
-            style={styles}
-        >
-        </div>
+        <>
+            <button onClick={async () => {
+                const { data } = jm.current.get_data('node_tree')
+                await save(JSON.stringify(jm.current.get_data('node_tree')), 'jsmind.json')
+            }}>
+                get data
+            </button>
+            <div
+                id="jsmind_container"
+                style={styles}
+            >
+            </div>
+        </>
     );
 };
 
