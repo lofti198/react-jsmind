@@ -1,14 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { save } from "save-file";
 import { parse } from "../libs/commonParser";
-
+import MarkdownEditor from "@uiw/react-markdown-editor";
+import { convertMapToMd } from "../libs/mapToMD";
 const JSMindMM = ({ mind, styles, options }) => {
   const [showMap, setShowMap] = useState(false);
-  const [text, setText] = useState(`- 1
-- 2
-- 3
-  - 3.1
-`);
+  const [markdown, setMarkdown] = useState(`- `);
   const jm = useRef();
 
   useEffect(() => {
@@ -16,43 +13,18 @@ const JSMindMM = ({ mind, styles, options }) => {
       jm.current = new window.jsMind(options);
       jm.current.show({
         ...mind,
-        data: parse(text),
+        data: parse(markdown),
       });
     } else {
       if (jm.current) {
-        console.log(jm.current, jm.current.mind.nodes.root);
-        setText(convertMapToMd(jm.current.mind.nodes.root));
-      } else {
-        // setText("");
+        setMarkdown(convertMapToMd(jm.current.mind.nodes.root));
       }
-      //;
     }
-
-    // jm.current.mind.nodes.sub2.topic += "A";
-    // console.log(jm.current.mind.nodes);
   }, [showMap]);
-
-  function convertMapToMd(root) {
-    let accumulator = "";
-    const logNode = (node, level = 0) => {
-      if (level > 0)
-        accumulator += `${"	".repeat(level - 1)}- ${node.topic}\r\n`;
-      // console.log(`${"	".repeat(level)}- ${node.topic}`);
-      if (node.children) {
-        const nextLevel = level + 1;
-        for (let i = 0; i < node.children.length; i++) {
-          logNode(node.children[i], nextLevel);
-        }
-      }
-    };
-    logNode(root);
-    return accumulator;
-    //console.log(jm.mind.nodes.root);
-  }
 
   return (
     <>
-      <div>
+      <div className="centered-content-block">
         <button
           onClick={() => {
             setShowMap((prev) => !prev);
@@ -65,11 +37,11 @@ const JSMindMM = ({ mind, styles, options }) => {
         {showMap ? (
           <div id="jsmind_container" style={styles}></div>
         ) : (
-          <textarea
-            rows="30"
-            cols="100"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
+          <MarkdownEditor
+            style={{ height: "100vh", overflow: "auto", padding: "8px" }}
+            value={markdown}
+            onChange={(value, viewUpdate) => setMarkdown(value)}
+            toolbars={[]}
           />
         )}
       </div>

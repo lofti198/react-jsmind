@@ -70,7 +70,7 @@ function App() {
       <JSMindMM
         mind={mind}
         options={options}
-        styles={{ width: "100%", height: "900px" }}
+        styles={{ width: "100%", height: "500px" }}
         // maybe this will help us in future when we decide to add our custom logic
         // onClick={handleClick}
         // onContextMenu={handleContextMenu}
