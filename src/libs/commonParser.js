@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from "uuid";
+
 /**
  * Find the outline level and title
  * @param {string} line  Content's line
@@ -39,6 +41,14 @@ const Status = {
 };
 // "·": 0
 
+// const preProcessContent = (text) => {
+//   var inputArray = text.split("\n");
+//   var filteredArray = inputArray.filter(function (rowString) {
+//     console.log(rowString);
+//     return rowString;
+//   });
+//   return filteredArray.join("\n");
+// };
 /**
  *
  * @param {string} content
@@ -46,6 +56,8 @@ const Status = {
  * @returns {Array}
  */
 export function parse(content, matchMap = Status) {
+  //content = preProcessContent(content);
+
   if (typeof matchMap !== "object") {
     throw new Error("match must be a object saving the order of tags");
   }
@@ -71,12 +83,17 @@ export function parse(content, matchMap = Status) {
     //only the first non-numeric and non-letter character is the letter you'd like to matching will push it in array
     //so set this flag
     let matchFlag = index === firstLetterIndex && index !== -1;
+    if (!matchFlag) {
+      line = `- ${line}`;
+      index = line.search(filterArr);
+      firstLetterIndex = line.search(/[^\w\s]/);
+      matchFlag = index === firstLetterIndex && index !== -1;
+    }
     //this line's type
     let type = line.charAt(index);
     //pick up level and text from the line
     let rel = findNode(line, type);
-    if (rel && matchFlag) {
-      // console.log(index, firstLetterIndex, type, rel);
+    if (rel && matchFlag && rel.title.trim().length > 0) {
       let { title, level } = rel;
       //use stack to save last node and level
       let lastNode = nodeStack[nodeStack.length - 1];
@@ -91,11 +108,12 @@ export function parse(content, matchMap = Status) {
         nodeStack.pop();
         lastNode = nodeStack[nodeStack.length - 1];
       }
+
       //saving the node
       let node = {
-        id: title.toLowerCase(),
+        id: title.toLowerCase() + "_" + uuidv4(),
         parentid: lastNode.id,
-        topic: title.replace(title.charAt(0), title.charAt(0).toUpperCase()),
+        topic: title, // .replace(title.charAt(0), title.charAt(0).toUpperCase()),
       };
       nodes.push(node);
       nodeStack.push(node);

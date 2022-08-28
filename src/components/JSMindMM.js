@@ -3,10 +3,17 @@ import { save } from "save-file";
 import { parse } from "../libs/commonParser";
 import MarkdownEditor from "@uiw/react-markdown-editor";
 import { convertMapToMd } from "../libs/mapToMD";
+
 const JSMindMM = ({ mind, styles, options }) => {
   const [showMap, setShowMap] = useState(false);
   const [markdown, setMarkdown] = useState(`- `);
   const jm = useRef();
+  const editorRef = useRef(null);
+
+  useEffect(() => {
+    const text = localStorage.getItem("text");
+    if (text != null) setMarkdown(text);
+  }, []);
 
   useEffect(() => {
     if (showMap) {
@@ -38,9 +45,13 @@ const JSMindMM = ({ mind, styles, options }) => {
           <div id="jsmind_container" style={styles}></div>
         ) : (
           <MarkdownEditor
+            ref={editorRef}
             style={{ height: "100vh", overflow: "auto", padding: "8px" }}
             value={markdown}
-            onChange={(value, viewUpdate) => setMarkdown(value)}
+            onChange={(value, viewUpdate) => {
+              setMarkdown(value);
+              localStorage.setItem("text", value);
+            }}
             toolbars={[]}
           />
         )}
