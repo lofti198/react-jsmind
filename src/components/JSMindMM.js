@@ -1,10 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import { save } from "save-file";
-import { parse } from "../libs/markdownParser";
+import { parse } from "../libs/commonParser";
 
 const JSMindMM = ({ mind, styles, options }) => {
   const [showMap, setShowMap] = useState(false);
-  const [text, setText] = useState("# 1");
+  const [text, setText] = useState(`- 1
+- 2
+- 3
+  - 3.1
+`);
   const jm = useRef();
 
   useEffect(() => {
@@ -31,7 +35,8 @@ const JSMindMM = ({ mind, styles, options }) => {
   function convertMapToMd(root) {
     let accumulator = "";
     const logNode = (node, level = 0) => {
-      accumulator += `${"	".repeat(level)}- ${node.topic}\r\n`;
+      if (level > 0)
+        accumulator += `${"	".repeat(level - 1)}- ${node.topic}\r\n`;
       // console.log(`${"	".repeat(level)}- ${node.topic}`);
       if (node.children) {
         const nextLevel = level + 1;
