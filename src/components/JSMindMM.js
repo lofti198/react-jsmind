@@ -52,7 +52,7 @@ const JSMindMM = ({ mind, styles, options }) => {
               setMarkdown(value);
               localStorage.setItem("text", value);
             }}
-            toolbars={[]}
+            hideToolbar={false}
           />
         )}
       </div>
