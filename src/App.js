@@ -42,6 +42,7 @@ const options = {
 };
 
 function App() {
+  // Just comment
   const handleContextMenu = (e, jmnode) => {};
   const handleMouseDown = (e, jmnode) => {};
   const handleMouseUp = (e, jmnode) => {};
