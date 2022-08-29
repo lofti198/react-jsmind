@@ -3,10 +3,12 @@ import { save } from "save-file";
 import { parse } from "../libs/commonParser";
 import MarkdownEditor from "@uiw/react-markdown-editor";
 import { convertMapToMd } from "../libs/mapToMD";
+import { sampleString } from "../data/data";
 
 const JSMindMM = ({ mind, styles, options }) => {
   const [showMap, setShowMap] = useState(false);
-  const [markdown, setMarkdown] = useState(`- `);
+  console.log(sampleString);
+  const [markdown, setMarkdown] = useState(sampleString);
   const jm = useRef();
   const editorRef = useRef(null);
 

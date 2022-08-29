@@ -83,6 +83,8 @@ export function parse(content, matchMap = Status) {
     //only the first non-numeric and non-letter character is the letter you'd like to matching will push it in array
     //so set this flag
     let matchFlag = index === firstLetterIndex && index !== -1;
+    // for the case, if line starts from another symbol than supported ones
+    // in this case add to the start of line just standard outliner symbol
     if (!matchFlag) {
       line = `- ${line}`;
       index = line.search(filterArr);
