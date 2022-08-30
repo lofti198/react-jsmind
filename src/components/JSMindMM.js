@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { save } from "save-file";
+
 import { parse } from "../libs/commonParser";
 import MarkdownEditor from "@uiw/react-markdown-editor";
 import { convertMapToMd } from "../libs/mapToMD";
@@ -7,15 +7,27 @@ import { sampleString } from "../data/data";
 
 const JSMindMM = ({ mind, styles, options }) => {
   const [showMap, setShowMap] = useState(false);
-  console.log(sampleString);
+
   const [markdown, setMarkdown] = useState(sampleString);
   const jm = useRef();
-  const editorRef = useRef(null);
+  const $ref = useRef(null);
 
   useEffect(() => {
     const text = localStorage.getItem("text");
     if (text != null) setMarkdown(text);
   }, []);
+
+  useEffect(() => {
+    setTimeout(() => {
+      const view = $ref.current?.editor.current?.view;
+      console.log("in setTimeout: ", $ref.current);
+      if (view) {
+        console.log("view is defined");
+        view.focus();
+        view.dispatch(view.state.update({ selection: { anchor: 12 } }));
+      }
+    }, 2000);
+  }, [$ref]);
 
   useEffect(() => {
     if (showMap) {
@@ -47,7 +59,7 @@ const JSMindMM = ({ mind, styles, options }) => {
           <div id="jsmind_container" style={styles}></div>
         ) : (
           <MarkdownEditor
-            ref={editorRef}
+            ref={$ref}
             style={{ height: "100vh", overflow: "auto", padding: "8px" }}
             value={markdown}
             onChange={(value, viewUpdate) => {
@@ -55,6 +67,10 @@ const JSMindMM = ({ mind, styles, options }) => {
               localStorage.setItem("text", value);
             }}
             hideToolbar={false}
+            onStatistics={(data) => {
+              // main = data.selectionAsSingle;
+              // console.log("data:", data.selectionAsSingle);
+            }}
           />
         )}
       </div>
