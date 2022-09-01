@@ -6,60 +6,74 @@ import { convertMapToMd } from "../libs/mapToMD";
 import { sampleString } from "../data/data";
 
 const JSMindMM = ({ mind, styles, options }) => {
-  const [showMap, setShowMap] = useState(false);
-  console.log(sampleString);
-  const [markdown, setMarkdown] = useState(sampleString);
-  const jm = useRef();
-  const editorRef = useRef(null);
+    const [showMap, setShowMap] = useState(false);
+    console.log(sampleString);
+    const [markdown, setMarkdown] = useState(sampleString);
+    const jm = useRef();
+    const editorRef = useRef(null);
 
-  useEffect(() => {
-    const text = localStorage.getItem("text");
-    if (text != null) setMarkdown(text);
-  }, []);
+    useEffect(() => {
+        const text = localStorage.getItem("text");
+        if (text != null) setMarkdown(text);
+    }, []);
 
-  useEffect(() => {
-    if (showMap) {
-      jm.current = new window.jsMind(options);
-      jm.current.show({
-        ...mind,
-        data: parse(markdown),
-      });
-    } else {
-      if (jm.current) {
-        setMarkdown(convertMapToMd(jm.current.mind.nodes.root));
-      }
-    }
-  }, [showMap]);
+    useEffect(() => {
+        if (showMap) {
+            jm.current = new window.jsMind(options);
+            jm.current.show({
+                ...mind,
+                data: parse(markdown),
+            });
+        } else {
+            if (jm.current) {
+                setMarkdown(convertMapToMd(jm.current.mind.nodes.root));
+            }
+        }
+    }, [showMap]);
 
-  return (
-    <>
-      <div className="centered-content-block">
-        <button
-          onClick={() => {
-            setShowMap((prev) => !prev);
-          }}
-        >
-          {showMap ? "Switch to text" : "Switch to map"}
-        </button>
-      </div>
-      <div>
-        {showMap ? (
-          <div id="jsmind_container" style={styles}></div>
-        ) : (
-          <MarkdownEditor
-            ref={editorRef}
-            style={{ height: "100vh", overflow: "auto", padding: "8px" }}
-            value={markdown}
-            onChange={(value, viewUpdate) => {
-              setMarkdown(value);
-              localStorage.setItem("text", value);
-            }}
-            hideToolbar={false}
-          />
-        )}
-      </div>
-    </>
-  );
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            const view = editorRef.current?.editor.current?.view;
+            console.log(view);
+            console.log(editorRef);
+            if (view) {
+                view.focus();
+                view.dispatch(view.state.update({ selection: { anchor: 18 } }));
+            }
+        }, 200);
+
+        return () => clearTimeout(timeout)
+    }, [editorRef]);
+
+    return (
+        <>
+            <div className="centered-content-block">
+                <button
+                    onClick={() => {
+                        setShowMap((prev) => !prev);
+                    }}
+                >
+                    {showMap ? "Switch to text" : "Switch to map"}
+                </button>
+            </div>
+            <div>
+                {showMap ? (
+                    <div id="jsmind_container" style={styles}></div>
+                ) : (
+                    <MarkdownEditor
+                        ref={editorRef}
+                        style={{ height: "100vh", overflow: "auto", padding: "8px" }}
+                        value={markdown}
+                        onChange={(value, viewUpdate) => {
+                            setMarkdown(value);
+                            localStorage.setItem("text", value);
+                        }}
+                        hideToolbar={false}
+                    />
+                )}
+            </div>
+        </>
+    );
 };
 
 export default JSMindMM;
