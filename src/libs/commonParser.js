@@ -77,6 +77,15 @@ export function parse(content, matchMap = Status) {
   nodeStack.push(root);
   lastNodeLevelStack.push("root");
   content.split("\n").forEach((line) => {
+    // console.log(line);
+    // console.log(
+    //   // "nodes",
+    //   // nodes,
+    //   // "nodeStack",
+    //   // nodeStack,
+    //   "lastNodeLevelStack",
+    //   lastNodeLevelStack
+    // );
     //match the first non-numeric and non-letter character
     let index = line.search(filterArr);
     let firstLetterIndex = line.search(/[^\w\s]/);

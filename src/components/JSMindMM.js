@@ -6,11 +6,11 @@ import { convertMapToMd } from "../libs/mapToMD";
 import { sampleString } from "../data/data";
 
 const JSMindMM = ({ mind, styles, options }) => {
+  const $ref = useRef(null);
   const [showMap, setShowMap] = useState(false);
 
   const [markdown, setMarkdown] = useState(sampleString);
   const jm = useRef();
-  const $ref = useRef(null);
 
   useEffect(() => {
     const text = localStorage.getItem("text");
